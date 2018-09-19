@@ -1,6 +1,7 @@
 <template>
   <div class="index">
     <router-link  to="/button">button</router-link>
+    <router-link  to="/menu">menu</router-link>
   </div>
 </template>
 <script>

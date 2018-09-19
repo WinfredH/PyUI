@@ -1,8 +1,16 @@
 
 import Button from "./components/button/index";
+import Menu from "./components/menu/index";
+import MenuItem from "./components/menu-item/index";
+import MenuGroup from "./components/menu-group/index";
+import Submenu from "./components/submenu/index";
 
 const components = [
   Button,
+  Menu,
+  MenuItem,
+  MenuGroup,
+  Submenu,
 ];
 
 const install = function (Vue) {
