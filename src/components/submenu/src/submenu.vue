@@ -5,10 +5,12 @@
       @mouseleave="mouseLeaveCallback"
   >
     <div
+        ref="title"
         class="py-submenu-title"
         :class="{
-          'horizontal-menu': MENU.mode === 'horizontal',
-          'vertical-menu': MENU.mode === 'vertical'
+          'horizontal-menu': rootMenu.mode === 'horizontal',
+          'vertical-menu': rootMenu.mode === 'vertical',
+          'py-submenu-title--choosen': !collapse
         }"
         @click="clickCallback"
     >
@@ -17,10 +19,11 @@
     <transition name="submenu-list">
       <ul
           v-show="!collapse"
-          class="py-submenu-list"
+          ref="list"
+          class="py-submenu--ul"
           :class="{
-            'horizontal-menu': MENU.mode === 'horizontal',
-            'vertical-menu': MENU.mode === 'vertical'
+            'horizontal-menu': rootMenu.mode === 'horizontal',
+            'vertical-menu': rootMenu.mode === 'vertical',
           }"
       >
         <slot></slot>
@@ -32,28 +35,48 @@
 <script>
 export default {
   name: "py-submenu",
-  inject: ['MENU'],
+  // 注入根菜单组件
+  inject: ['rootMenu'],
   data() {
     return {
       collapse: true,
     };
   },
-  methods: {
-    mouseEnterCallback() {
-      if (this.MENU.mode === 'horizontal') this.collapse = false;
-    },
-    mouseLeaveCallback() {
-      if (this.MENU.mode === 'horizontal') this.collapse = true;
-    },
-    clickCallback() {
-      console.log(this.MENU.mode);
-      if (this.MENU.mode === 'vertical') this.collapse = !this.collapse;
+  computed: {
+    parentMenu() {
+      return this.$parent.$options._componentTag;
     },
   },
-  provide() {
-    return {
-      parentMENU: this,
-    };
+  mounted() {
+    // 根菜单为水平时，动态计算定位
+    if (this.rootMenu.mode === 'horizontal') {
+      this.$watch('collapse', this.parentMenu === 'py-menu' ? this.singlePosition : this.multiplePosition);
+    }
+  },
+  methods: {
+    mouseEnterCallback() {
+      if (this.rootMenu.mode === 'horizontal') this.collapse = false;
+    },
+    mouseLeaveCallback() {
+      if (this.rootMenu.mode === 'horizontal') this.collapse = true;
+    },
+    clickCallback() {
+      if (this.rootMenu.mode === 'vertical') this.collapse = !this.collapse;
+    },
+    // 单级水平子菜单时动态定位
+    singlePosition(val) {
+      if (val) return;
+      this.$nextTick(() => {
+        this.$refs.list.style.top = `${4 + this.$refs.title.offsetHeight}px`;
+      });
+    },
+    // 多级水平子菜单时动态定位
+    multiplePosition(val) {
+      if (val) return;
+      this.$nextTick(() => {
+        this.$refs.list.style.left = `${2 + this.$refs.title.offsetWidth}px`;
+      });
+    },
   },
 };
 </script>
@@ -63,11 +86,12 @@ export default {
 @import "../../../base/themes.scss";
 .py-submenu {
   position: relative;
-  height: 100%;
-  line-height: 100%;
 }
 /*标题的样式*/
 .py-submenu-title:hover {
+  background-color: #41b883;
+}
+.py-submenu-title--choosen {
   background-color: #41b883;
 }
 .py-submenu-title.horizontal-menu {
@@ -77,26 +101,28 @@ export default {
   padding: 10px 6px;
 }
 /*子菜单的样式*/
-.py-submenu-list {
+.py-submenu--ul {
   background-color: #288;
-  overflow: hidden;
 }
-.py-submenu-list.horizontal-menu {
-  position: absolute;
-  top: 30px;
-}
-.py-submenu-list.vertical-menu {
 
+.py-submenu--ul.horizontal-menu {
+  position: absolute;
+  /*top: 30px;*/
+  z-index: 999;
 }
+
+.py-submenu--ul.py-submenu--ul--right.horizontal-menu {
+  top: 0;
+}
+
 /*子菜单的动画*/
 .submenu-list-enter, .submenu-list-leave-to {
-  height: 0;
   opacity: 0;
 }
 .submenu-list-enter-to, .submenu-list-leave {
   opacity: 1;
 }
 .submenu-list-enter-active, .submenu-list-leave-active {
-  transition: all 1s;
+  transition: all .3s;
 }
 </style>

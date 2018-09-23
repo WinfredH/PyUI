@@ -2,8 +2,8 @@
   <li
       class="py-menu-item"
       :class="{
-        'horizontal-menu': MENU.mode === 'horizontal',
-        'vertical-menu': MENU.mode === 'vertical',
+        'horizontal-menu': rootMenu.mode === 'horizontal',
+        'vertical-menu': rootMenu.mode === 'vertical',
         'submenu-item': $parent.$options._componentTag === 'py-submenu'
       }"
   >
@@ -14,7 +14,7 @@
 <script>
 export default {
   name: "py-menu-item",
-  inject: ['MENU'],
+  inject: ['rootMenu'],
   created() {
     // console.log(this.$parent.$options._componentTag);
   },
@@ -26,7 +26,7 @@ export default {
 @import "../../../base/themes.scss";
 .py-menu-item {
   /*padding: 5px;*/
-
+  white-space: nowrap;
 }
 .py-menu-item:hover {
   background-color: #41b883;

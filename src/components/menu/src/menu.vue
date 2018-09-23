@@ -14,11 +14,12 @@ export default {
     mode: {
       type: String,
       default: 'vertical',
+      validator: val => val === 'vertical' || val === 'horizontal',
     },
   },
   provide() {
     return {
-      MENU: this,
+      rootMenu: this,
     };
   },
 };

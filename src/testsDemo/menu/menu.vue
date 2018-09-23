@@ -7,7 +7,17 @@
         <py-submenu>
           <template slot="title">子菜单3</template>
           <py-menu-item>子菜单项3-1</py-menu-item>
-          <py-menu-item>子菜单项3-2</py-menu-item>
+          <py-submenu>
+            <template slot="title">子菜单3-2</template>
+            <py-menu-item>子菜单项3-2-1</py-menu-item>
+            <py-submenu>
+              <template slot="title">子菜单3-2-2</template>
+              <py-menu-item>子菜单项3-2-2-1</py-menu-item>
+              <py-menu-item>子菜单项3-2-2-2</py-menu-item>
+              <py-menu-item>子菜单项3-2-2-3</py-menu-item>
+            </py-submenu>
+            <py-menu-item>子菜单项3-2-3</py-menu-item>
+          </py-submenu>
           <py-menu-item>子菜单项3-3</py-menu-item>
         </py-submenu>
         <py-menu-item>菜单项4</py-menu-item>
@@ -21,7 +31,12 @@
         <py-submenu>
           <template slot="title">子菜单3</template>
           <py-menu-item>子菜单项3-1</py-menu-item>
-          <py-menu-item>子菜单项3-2</py-menu-item>
+          <py-submenu>
+            <template slot="title">子菜单3-2</template>
+            <py-menu-item>子菜单项3-2-1</py-menu-item>
+            <py-menu-item>子菜单项3-2-2</py-menu-item>
+            <py-menu-item>子菜单项3-2-3</py-menu-item>
+          </py-submenu>
           <py-menu-item>子菜单项3-3</py-menu-item>
         </py-submenu>
         <py-menu-item>菜单项4</py-menu-item>
