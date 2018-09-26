@@ -1,30 +1,32 @@
 <template>
   <li
-      class="py-submenu"
-      @mouseenter="mouseEnterCallback"
-      @mouseleave="mouseLeaveCallback"
+    class="py-submenu"
+    @mouseenter="mouseEnterCallback"
+    @mouseleave="mouseLeaveCallback"
   >
+    <!--子菜单标题-->
     <div
-        ref="title"
-        class="py-submenu-title"
-        :class="{
-          'horizontal-menu': rootMenu.mode === 'horizontal',
-          'vertical-menu': rootMenu.mode === 'vertical',
-          'py-submenu-title--choosen': !collapse
-        }"
-        @click="clickCallback"
+      ref="title"
+      class="py-submenu-title"
+      :class="{
+        'horizontal-menu': rootMenu.mode === 'horizontal',
+        'vertical-menu': rootMenu.mode === 'vertical',
+        'py-submenu--title--choosen': rootMenu.activeSubmenuIndex.indexOf(index) !== -1,
+      }"
+      @click="clickCallback"
     >
       <slot name="title"></slot>
     </div>
+    <!--子菜单列表-->
     <transition name="submenu-list">
       <ul
-          v-show="!collapse"
-          ref="list"
-          class="py-submenu--ul"
-          :class="{
-            'horizontal-menu': rootMenu.mode === 'horizontal',
-            'vertical-menu': rootMenu.mode === 'vertical',
-          }"
+        v-show="!collapse"
+        ref="list"
+        class="py-submenu--ul"
+        :class="{
+          'horizontal-menu': rootMenu.mode === 'horizontal',
+          'vertical-menu': rootMenu.mode === 'vertical',
+        }"
       >
         <slot></slot>
       </ul>
@@ -34,23 +36,33 @@
 
 <script>
 export default {
-  name: "py-submenu",
+  name: 'py-submenu',
   // 注入根菜单组件
   inject: ['rootMenu'],
+  props: {
+    index: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       collapse: true,
     };
   },
   computed: {
-    parentMenu() {
+    parentMenuName() {
       return this.$parent.$options._componentTag;
     },
   },
   mounted() {
+    // 监听菜单项点击事件
+    this.$on('clickMenuItem', this.handleItemClick);
+    // 监听事件冒泡
+    this.$on('clickBubble', this.handleBubble);
     // 根菜单为水平时，动态计算定位
     if (this.rootMenu.mode === 'horizontal') {
-      this.$watch('collapse', this.parentMenu === 'py-menu' ? this.singlePosition : this.multiplePosition);
+      this.$watch('collapse', this.parentMenuName === 'py-menu' ? this.singlePosition : this.multiplePosition);
     }
   },
   methods: {
@@ -62,6 +74,19 @@ export default {
     },
     clickCallback() {
       if (this.rootMenu.mode === 'vertical') this.collapse = !this.collapse;
+    },
+    // 处理子菜单项的点击
+    handleItemClick(itemIndex) {
+      const arr = [];
+      arr.push(this.index);
+      // 向父组件触发事件
+      this.$parent.$emit('clickBubble', JSON.stringify(arr));
+    },
+    // 处理子菜单的事件冒泡
+    handleBubble(param) {
+      const arr = JSON.parse(param);
+      arr.push(this.index);
+      this.$parent.$emit('clickBubble', JSON.stringify(arr));
     },
     // 单级水平子菜单时动态定位
     singlePosition(val) {
@@ -75,6 +100,7 @@ export default {
       if (val) return;
       this.$nextTick(() => {
         this.$refs.list.style.left = `${2 + this.$refs.title.offsetWidth}px`;
+        this.$refs.list.style.top = '0px';
       });
     },
   },
@@ -84,15 +110,23 @@ export default {
 <style lang="scss" scoped>
 @import "../../../base/style.scss";
 @import "../../../base/themes.scss";
+
+$activeBackgroundColor: #41b883;
+$activeFontColor: #facc4b;
+
 .py-submenu {
   position: relative;
 }
 /*标题的样式*/
-.py-submenu-title:hover {
-  background-color: #41b883;
+.py-submenu-title {
+  box-sizing: border-box;
 }
-.py-submenu-title--choosen {
-  background-color: #41b883;
+.py-submenu-title:hover {
+  background-color: $activeBackgroundColor;
+}
+.py-submenu--title--choosen {
+  color: $activeFontColor;
+  border-bottom: 1px solid $activeFontColor;
 }
 .py-submenu-title.horizontal-menu {
   padding: 6px 10px;
@@ -107,12 +141,7 @@ export default {
 
 .py-submenu--ul.horizontal-menu {
   position: absolute;
-  /*top: 30px;*/
   z-index: 999;
-}
-
-.py-submenu--ul.py-submenu--ul--right.horizontal-menu {
-  top: 0;
 }
 
 /*子菜单的动画*/

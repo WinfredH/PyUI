@@ -1,7 +1,10 @@
 <template>
   <ul
-      class="py-menu"
-      :class="{'vertical-menu': mode === 'vertical', 'horizontal-menu': mode === 'horizontal'}"
+    class="py-menu"
+    :class="{
+      'vertical-menu': mode === 'vertical',
+      'horizontal-menu': mode === 'horizontal',
+    }"
   >
     <slot></slot>
   </ul>
@@ -9,7 +12,7 @@
 
 <script>
 export default {
-  name: "py-menu",
+  name: 'py-menu',
   props: {
     mode: {
       type: String,
@@ -21,6 +24,29 @@ export default {
     return {
       rootMenu: this,
     };
+  },
+  data() {
+    return {
+      // 记录被激活的菜单项
+      activeItemIndex: null,
+      // 记录被激活的子菜单的数组
+      activeSubmenuIndex: [],
+    };
+  },
+  mounted() {
+    // 监听菜单项点击事件
+    this.$on('clickMenuItem', this.handleItemClick);
+    // 监听事件冒泡
+    this.$on('clickBubble', this.handleBubble);
+  },
+  methods: {
+    handleItemClick(index) {
+      this.activeItemIndex = index;
+    },
+    handleBubble(param) {
+      console.log(JSON.parse(param));
+      this.activeSubmenuIndex = JSON.parse(param);
+    },
   },
 };
 </script>
