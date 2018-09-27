@@ -7,7 +7,7 @@
     <!--子菜单标题-->
     <div
       ref="title"
-      class="py-submenu-title"
+      class="py-submenu--title"
       :class="{
         'horizontal-menu': rootMenu.mode === 'horizontal',
         'vertical-menu': rootMenu.mode === 'vertical',
@@ -69,6 +69,7 @@ export default {
     if (this.rootMenu.mode === 'horizontal') {
       this.$watch('collapse', this.parentMenuName === 'py-menu' ? this.singlePosition : this.multiplePosition);
     }
+    this.$watch('collapse', this.handleCollapseChange);
   },
   methods: {
     mouseEnterCallback() {
@@ -81,7 +82,7 @@ export default {
       if (this.rootMenu.mode === 'vertical' && !this.disabled) this.collapse = !this.collapse;
     },
     // 处理子菜单项的点击
-    handleItemClick(itemIndex) {
+    handleItemClick() {
       const arr = [];
       arr.push(this.index);
       // 向父组件触发事件
@@ -108,6 +109,23 @@ export default {
         this.$refs.list.style.top = '0px';
       });
     },
+    // collapse动画
+    // handleCollapseChange(value) {
+    //   if (value) {
+    //     // 折叠
+    //     this.$nextTick(() => {
+    //       this.$refs.list.style.height = `0px`;
+    //     });
+    //   } else {
+    //     // 展开
+    //     this.$refs.list.style.height = 'auto';
+    //     const targetHeight = this.$refs.list.getBoundingClientRect().height;
+    //     this.$refs.list.style.height = '0px';
+    //     this.$nextTick(() => {
+    //       this.$refs.list.style.height = `${targetHeight}px`;
+    //     });
+    //   }
+    // },
   },
 };
 </script>
@@ -116,28 +134,29 @@ export default {
 @import "../../../base/style.scss";
 @import "../../../base/themes.scss";
 
+$submenuBackgroundColor: #54858c;
 $activeBackgroundColor: #41b883;
-$activeFontColor: #facc4b;
+$activeFontColor: #41b883;
 
 .py-submenu {
   position: relative;
 }
 
 /*标题的样式*/
-.py-submenu-title {
+.py-submenu--title {
   box-sizing: border-box;
 }
-.py-submenu-title:hover {
+.py-submenu--title:hover {
   background-color: $activeBackgroundColor;
 }
 .py-submenu--title--choosen {
   color: $activeFontColor;
-  border-bottom: 1px solid $activeFontColor;
+  border-bottom: 2px solid $activeFontColor;
 }
-.py-submenu-title.horizontal-menu {
+.py-submenu--title.horizontal-menu {
   padding: 6px 10px;
 }
-.py-submenu-title.vertical-menu {
+.py-submenu--title.vertical-menu {
   padding: 10px 6px;
 }
 .disabled {
@@ -148,7 +167,8 @@ $activeFontColor: #facc4b;
 
 /*子菜单的样式*/
 .py-submenu--ul {
-  background-color: #288;
+  background-color: $submenuBackgroundColor;
+  /*overflow: hidden;*/
 }
 .py-submenu--ul.horizontal-menu {
   position: absolute;
@@ -163,6 +183,6 @@ $activeFontColor: #facc4b;
   opacity: 1;
 }
 .submenu-list-enter-active, .submenu-list-leave-active {
-  transition: all .3s;
+  transition: all .2s ease;
 }
 </style>

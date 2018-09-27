@@ -48,9 +48,11 @@ export default {
 @import "../../../base/themes.scss";
 
 $activeBackgroundColor: #41b883;
-$activeFontColor: #facc4b;
+$activeFontColor: #cadde2;
 
 .py-menu-item {
+  box-sizing: border-box;
+  overflow: hidden;
   white-space: nowrap;
 }
 .py-menu-item:hover {

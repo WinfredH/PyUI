@@ -44,7 +44,6 @@ export default {
       this.activeItemIndex = index;
     },
     handleBubble(param) {
-      console.log(JSON.parse(param));
       this.activeSubmenuIndex = JSON.parse(param);
     },
   },
@@ -58,7 +57,7 @@ export default {
   box-sizing: border-box;
   display: flex;
   background-color: #35495e;
-  color: #eee;
+  color: #cadde2;
 }
 .py-menu.vertical-menu {
   flex-direction: column;
