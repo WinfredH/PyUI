@@ -5,6 +5,7 @@
       'horizontal-menu': rootMenu.mode === 'horizontal',
       'vertical-menu': rootMenu.mode === 'vertical',
       'active': rootMenu.activeItemIndex === index,
+      'disabled': disabled,
     }"
     @click="handleClick(index)"
   >
@@ -24,9 +25,16 @@ export default {
     route: {
       type: String,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     handleClick(index) {
+      // item被禁用时不执行
+      if (this.disabled) return;
+      // 如果item包含于submenu，则同时向rootMenu和submenu触发事件
       this.$parent.$options._componentTag === 'py-submenu' ? this.$parent.$emit('clickMenuItem', index) : this.rootMenu.$data.activeSubmenuIndex = [];
       this.rootMenu.$emit('clickMenuItem', index);
       this.$emit('clickMenuItem', index);
@@ -57,5 +65,10 @@ $activeFontColor: #facc4b;
 }
 .py-menu-item.vertical-menu {
   padding: 10px 6px;
+}
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: none !important;
 }
 </style>

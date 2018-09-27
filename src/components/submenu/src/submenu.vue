@@ -12,6 +12,7 @@
         'horizontal-menu': rootMenu.mode === 'horizontal',
         'vertical-menu': rootMenu.mode === 'vertical',
         'py-submenu--title--choosen': rootMenu.activeSubmenuIndex.indexOf(index) !== -1,
+        'disabled': disabled,
       }"
       @click="clickCallback"
     >
@@ -44,6 +45,10 @@ export default {
       type: String,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -67,13 +72,13 @@ export default {
   },
   methods: {
     mouseEnterCallback() {
-      if (this.rootMenu.mode === 'horizontal') this.collapse = false;
+      if (this.rootMenu.mode === 'horizontal' && !this.disabled) this.collapse = false;
     },
     mouseLeaveCallback() {
-      if (this.rootMenu.mode === 'horizontal') this.collapse = true;
+      if (this.rootMenu.mode === 'horizontal' && !this.disabled) this.collapse = true;
     },
     clickCallback() {
-      if (this.rootMenu.mode === 'vertical') this.collapse = !this.collapse;
+      if (this.rootMenu.mode === 'vertical' && !this.disabled) this.collapse = !this.collapse;
     },
     // 处理子菜单项的点击
     handleItemClick(itemIndex) {
@@ -117,6 +122,7 @@ $activeFontColor: #facc4b;
 .py-submenu {
   position: relative;
 }
+
 /*标题的样式*/
 .py-submenu-title {
   box-sizing: border-box;
@@ -134,11 +140,16 @@ $activeFontColor: #facc4b;
 .py-submenu-title.vertical-menu {
   padding: 10px 6px;
 }
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: none !important;
+}
+
 /*子菜单的样式*/
 .py-submenu--ul {
   background-color: #288;
 }
-
 .py-submenu--ul.horizontal-menu {
   position: absolute;
   z-index: 999;
